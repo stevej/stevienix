@@ -10,4 +10,7 @@ void screen_clear();
 // Output a null-terminated ASCII string to the screen.
 void screen_write(char *c);
 
-#endif // SCREEN_H
+void screen_write_hex(u32 n);
+void screen_write_dec(u32 n);
+
+#endif

@@ -2,7 +2,7 @@
 # The C and C++ rules are already setup by default.
 # The only one that needs changing is the assembler
 # rule, as we use nasm instead of GNU as.
-SOURCES=boot.o main.o screen.o io.o
+SOURCES=boot.o interrupt.o gdt_flush.o main.o screen.o io.o descriptor_tables.o isr.o
 
 CC=i586-elf-gcc
 LD=i586-elf-ld
