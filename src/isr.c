@@ -8,9 +8,38 @@
 #include "isr.h"
 #include "screen.h"
 
-// This gets called from our ASM interrupt handler stub.
+isr_t interrupt_handlers[256];
+
+void register_interrupt_handler(u8 n, isr_t handler) {
+  interrupt_handlers[n] = handler;
+}
+
+// This gets called from interrupt.s
 void isr_handler(registers_t regs) {
-   screen_write("recieved interrupt: ");
-   screen_write_dec(regs.int_no);
-   screen_put('\n');
+  if (interrupt_handlers[regs.int_no] != 0) {
+    isr_t handler = interrupt_handlers[regs.int_no];
+    handler(regs);
+  } else {
+    screen_write("unhandled interrupt: ");
+    screen_write_dec(regs.int_no);
+    screen_put('\n');
+  }
+}
+
+// This gets called from interrupt.s
+void irq_handler(registers_t regs) {
+  // Send an EOI (end of interrupt) signal to the PICs.
+  // If this interrupt involved the slave.
+  if (regs.int_no >= 40) {
+    // Send reset signal to slave.
+    outb(0xA0, 0x20);
+  }
+  // Send reset signal to master. (As well as slave, if necessary).
+  outb(0x20, 0x20);
+
+  if (interrupt_handlers[regs.int_no] != 0) {
+    isr_t handler = interrupt_handlers[regs.int_no];
+    handler(regs);
+  }
+
 }

@@ -1,6 +1,12 @@
+#ifndef DESCRIPTOR_TABLES_H
+#define DESCRIPTOR_TABLES_H
+
 #include "types.h"
 
 // borrowed from http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
+
+// Initialisation function is publicly accessible.
+void init_descriptor_tables();
 
 struct gdt_entry_struct {
    u16 limit_low;           // The lower 16 bits of the limit.
@@ -19,10 +25,6 @@ struct gdt_ptr_struct {
 }  __attribute__((packed));
 
 typedef struct gdt_ptr_struct gdt_ptr_t;
-
-// Initialisation function is publicly accessible.
-void init_descriptor_tables();
-
 
 // A struct describing an interrupt gate.
 struct idt_entry_struct {
@@ -44,7 +46,7 @@ struct idt_ptr_struct {
 
 typedef struct idt_ptr_struct idt_ptr_t;
 
-// These extern directives let us access the addresses of our ASM ISR handlers.
+// defined in interrupt.s
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -77,3 +79,22 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+
+extern void irq0 ();
+extern void irq1 ();
+extern void irq2 ();
+extern void irq3 ();
+extern void irq4 ();
+extern void irq5 ();
+extern void irq6 ();
+extern void irq7 ();
+extern void irq8 ();
+extern void irq9 ();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
+
+#endif

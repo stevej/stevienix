@@ -2,11 +2,11 @@
 # The C and C++ rules are already setup by default.
 # The only one that needs changing is the assembler
 # rule, as we use nasm instead of GNU as.
-SOURCES=boot.o interrupt.o gdt_flush.o main.o screen.o io.o descriptor_tables.o isr.o
+SOURCES=boot.o main.o io.o descriptor_tables.o isr.o interrupt.o gdt_flush.o screen.o timer.o
 
 CC=i586-elf-gcc
 LD=i586-elf-ld
-CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector
+CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -Wall -Wextra
 LDFLAGS=-Tlink.ld
 ASFLAGS=-felf
 
