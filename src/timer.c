@@ -16,6 +16,8 @@ static void timer_callback(registers_t regs) {
 }
 
 void init_timer(u32 frequency) {
+   asm volatile("sti"); // critical: we must enable interrupts
+
    // Firstly, register our timer callback.
    register_interrupt_handler(IRQ0, &timer_callback);
 

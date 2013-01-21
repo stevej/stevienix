@@ -13,8 +13,8 @@ int main(struct multiboot *mboot_ptr) {
   asm volatile("int $0x3");
   asm volatile("int $0x4");
 
-  asm volatile("sti"); // critical: we must enable interrupts
-  init_timer(50);
+  init_timer(50); // we'll get back to our timer when it's time to timeslice.
+
 
   return 0;
 }
