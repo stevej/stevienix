@@ -23,27 +23,24 @@ int main(struct multiboot *mboot_ptr) {
 
     // Initialise all the ISRs and segmentation
 
-  //init_descriptor_tables();
-    // Initialise the screen (by clearing it)
-    u32 a = kmalloc(8);
-    initialise_paging();
-    u32 b = kmalloc(8);
-    u32 c = kmalloc(8);
-    screen_write("a: ");
-    screen_write_hex(a);
-    screen_write(", b: ");
-    screen_write_hex(b);
-    screen_write("\nc: ");
-    screen_write_hex(c);
+  init_descriptor_tables();
+  // Initialise the screen (by clearing it)
+  u32 a = kmalloc(8);
+  initialise_paging();
+  u32 b = kmalloc(8);
+  u32 c = kmalloc(8);
+  screen_write("a: ");
+  screen_write_hex(a);
+  screen_write(", b: ");
+  screen_write_hex(b);
+  screen_write("\nc: ");
+  screen_write_hex(c);
 
-    kfree(c);
-    kfree(b);
-    u32 d = kmalloc(12);
-    screen_write(", d: ");
-    screen_write_hex(d);
-
-    return 0;
-
+  kfree(c);
+  kfree(b);
+  u32 d = kmalloc(12);
+  screen_write(", d: ");
+  screen_write_hex(d);
 
   return 0;
 }
