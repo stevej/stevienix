@@ -1,6 +1,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include "types.h"
+
 // Write a single character out to the screen.
 void screen_put(char c);
 
