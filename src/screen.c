@@ -8,6 +8,11 @@ u16 *video_memory = (u16 *)0xB8000;
 u8 cursor_x = 0;
 u8 cursor_y = 0;
 
+void initialize_screen() {
+  screen_clear();
+}
+
+
 static void move_cursor() {
   // The screen is 80 characters wide...
   u16 cursorLocation = cursor_y * 80 + cursor_x;

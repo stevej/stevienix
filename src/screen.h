@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+void initialize_screen();
+
 // Write a single character out to the screen.
 void screen_put(char c);
 
