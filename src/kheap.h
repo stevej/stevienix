@@ -15,6 +15,7 @@
 #define HEAP_INDEX_SIZE   0x20000
 #define HEAP_MAGIC        0x123890AB
 #define HEAP_MIN_SIZE     0x70000
+#define HEAP_PAGE_SIZE    0x1000
 
 /**
    Size information for a hole/block
