@@ -5,17 +5,19 @@
 #include "fs.h"
 #include "io.h"
 
-typedef struct
-{
-    u32 nfiles; // The number of files in the ramdisk.
+/**
+ * TODO(stevej): convert this to FAT?
+ */
+
+typedef struct {
+  u32 nfiles; // The number of files in the ramdisk.
 } initrd_header_t;
 
-typedef struct
-{
-    u8 magic;     // Magic number, for error checking.
-    i8 name[64];  // Filename.
-    u32 offset;   // Offset in the initrd that the file starts.
-    u32 length;   // Length of the file.
+typedef struct {
+  u8 magic;     // Magic number, for error checking.
+  i8 name[64];  // Filename.
+  u32 offset;   // Offset in the initrd that the file starts.
+  u32 length;   // Length of the file.
 } initrd_file_header_t;
 
 // Initialises the initial ramdisk. It gets passed the address of the multiboot module,

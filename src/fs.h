@@ -22,29 +22,27 @@ typedef void (*close_type_t)(struct fs_node*);
 typedef struct dirent * (*readdir_type_t)(struct fs_node*,u32);
 typedef struct fs_node * (*finddir_type_t)(struct fs_node*,char *name);
 
-typedef struct fs_node
-{
-    char name[128];     // The filename.
-    u32 mask;        // The permissions mask.
-    u32 uid;         // The owning user.
-    u32 gid;         // The owning group.
-    u32 flags;       // Includes the node type. See #defines above.
-    u32 inode;       // This is device-specific - provides a way for a filesystem to identify files.
-    u32 length;      // Size of the file, in bytes.
-    u32 impl;        // An implementation-defined number.
-    read_type_t read;
-    write_type_t write;
-    open_type_t open;
-    close_type_t close;
-    readdir_type_t readdir;
-    finddir_type_t finddir;
-    struct fs_node *ptr; // Used by mountpoints and symlinks.
+typedef struct fs_node {
+  char name[128];     // The filename.
+  u32 mask;           // The permissions mask.
+  u32 uid;            // The owning user.
+  u32 gid;            // The owning group.
+  u32 flags;          // Includes the node type. See #defines above.
+  u32 inode;          // This is device-specific - provides a way for a filesystem to identify files.
+  u32 length;         // Size of the file, in bytes.
+  u32 impl;           // An implementation-defined number.
+  read_type_t read;
+  write_type_t write;
+  open_type_t open;
+  close_type_t close;
+  readdir_type_t readdir;
+  finddir_type_t finddir;
+  struct fs_node *ptr; // Used by mountpoints and symlinks.
 } fs_node_t;
 
-struct dirent
-{
-    char name[128]; // Filename.
-    u32 ino;     // Inode number. Required by POSIX.
+struct dirent {
+  char name[128]; // Filename.
+  u32 inode_no;     // Inode number. Required by POSIX.
 };
 
 extern fs_node_t *fs_root; // The root of the filesystem.
@@ -56,6 +54,7 @@ u32 read_fs(fs_node_t *node, u32 offset, u32 size, u8 *buffer);
 u32 write_fs(fs_node_t *node, u32 offset, u32 size, u8 *buffer);
 void open_fs(fs_node_t *node, u8 read, u8 write);
 void close_fs(fs_node_t *node);
+
 struct dirent *readdir_fs(fs_node_t *node, u32 index);
 fs_node_t *finddir_fs(fs_node_t *node, char *name);
 

@@ -6,7 +6,7 @@ SOURCES=boot.o main.o io.o descriptor_tables.o isr.o interrupt.o gdt_flush.o scr
 
 CC=i586-elf-gcc
 LD=i586-elf-ld
-CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -Wall -Wextra
+CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -Wall -Wextra -std=c99
 LDFLAGS=-Tlink.ld
 ASFLAGS=-felf
 
