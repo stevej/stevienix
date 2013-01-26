@@ -76,3 +76,12 @@ char *strcat(char *dest, const char *src) {
 
   return dest;
 }
+
+
+int strlen(char *src)
+{
+    int i = 0;
+    while (*src++)
+        i++;
+    return i;
+}

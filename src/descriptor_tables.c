@@ -41,7 +41,7 @@ void init_descriptor_tables() {
 static void init_gdt() {
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
-   screen_write("gdt_ptr");
+   screen_write("gdt_ptr: ");
    screen_write_hex((u32)&gdt_ptr);
    screen_write("\n");
 
