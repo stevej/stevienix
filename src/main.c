@@ -62,7 +62,7 @@ void kmain(void) {
     screen_write(node->name);
     fs_node_t *fsnode = finddir_fs(fs_root, node->name);
 
-    if ((fsnode->flags&0x7) == FS_DIRECTORY) {
+    if ((fsnode->flags & 0x7) == FS_DIRECTORY) {
       screen_write("\n\t(directory)\n");
     } else {
       screen_write("\n\t contents: \"");
