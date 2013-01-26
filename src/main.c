@@ -8,10 +8,12 @@
 #include "kheap.h"
 #include "initrd.h"
 
-//int main(struct multiboot *mboot_ptr) {
-void kmain(void) {
+void kmain(u32 initial_stack) {
   initialize_screen();
   screen_write("kuatos 0.1\n");
+  screen_write("initial_stack: ");
+  screen_write_hex(initial_stack);
+  screen_write("\n"); // fudge, we really need vsprintf
 
   init_descriptor_tables();
 
