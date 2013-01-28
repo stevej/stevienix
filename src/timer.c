@@ -10,14 +10,12 @@ u32 tick = 0;
 
 static void timer_callback(registers_t regs) {
    tick++;
-   screen_write("Tick: ");
-   screen_write_dec(tick);
-   screen_write("\n");
+   switch_task();
 }
 
+// Precondition: sti must be called on the processor. Currently boot.s handles this.
 void init_timer(u32 frequency) {
-   asm volatile("sti"); // critical: we must enable interrupts
-
+  asm volatile("cli");
    // Firstly, register our timer callback.
    register_interrupt_handler(IRQ0, &timer_callback);
 
@@ -36,4 +34,5 @@ void init_timer(u32 frequency) {
    // Send the frequency divisor.
    outb(0x40, l);
    outb(0x40, h);
+   asm volatile("sti");
 }

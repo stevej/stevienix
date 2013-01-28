@@ -7,28 +7,46 @@
 #include "paging.h"
 #include "kheap.h"
 #include "initrd.h"
+#include "task.h"
+
+u32 initial_esp;
 
 void kmain(u32 initial_stack) {
+  initial_esp = initial_stack;
+
   initialize_screen();
-  screen_write("kuatos 0.1\n");
-  screen_write("initial_stack: ");
-  screen_write_hex(initial_stack);
-  screen_write("\n"); // fudge, we really need vsprintf
+  //screen_write("kuatos 0.1\n");
+  //screen_write("initial_stack: ");
+  //screen_write_hex(initial_stack);
+  //screen_write("\n"); // TODO(stevej): fudge, we really need vsprintf
 
   init_descriptor_tables();
+  asm volatile("sti");
+  init_timer(50);
 
-  asm volatile("int $0x3");
-  asm volatile("int $0x4");
-
-  // init_timer(50); // we'll get back to our timer when it's time to timeslice.
   initialise_paging();
-  screen_write("Let's page!\n");
+  //screen_write("start tasking\n");
+  initialise_tasking();
+
+  extern task_t *current_task;
+  if (current_task) {
+    screen_write("current_task id:");
+    screen_write_hex(current_task->id);
+    screen_write("\n");
+  } else {
+    screen_write("no current_task defined yet");
+  }
+  screen_write("getpid(): ");
+  screen_write_hex(getpid());
+  screen_write("\n");
+
+  //screen_write("Let's page!\n");
 
   //u32 *ptr = (u32*)0xA0000000;
   //u32 do_page_fault = *ptr;
+  extern char initrd[];
 
-  // Initialise the screen (by clearing it)
-
+  /*
   u32 a = kmalloc(8);
   u32 b = kmalloc(8);
   u32 c = kmalloc(8);
@@ -47,14 +65,26 @@ void kmain(u32 initial_stack) {
   screen_write("\n");
 
 
-  extern char initrd[];
   screen_write("initrd location:");
   screen_write_hex(initrd);
   screen_write("\n");
-
+  */
 
   // Initialise the initial ramdisk, and set it as the filesystem root.
   fs_root = initialise_initrd(initrd);
+
+// Create a new process in a new address space which is a clone of this.
+  int ret = fork();
+
+  screen_write("fork() returned ");
+  screen_write_hex(ret);
+  screen_write(", and getpid() returned ");
+  screen_write_hex(getpid());
+  screen_write("\n============================================================================\n");
+
+  // The next section of code is not reentrant so make sure we aren't interrupted during.
+  asm volatile("cli");
+
 
   // list the contents of /
   int i = 0;
@@ -78,5 +108,6 @@ void kmain(u32 initial_stack) {
     }
     i++;
   }
-
+  //sys_exit(0);
+  asm volatile("sti");
 }

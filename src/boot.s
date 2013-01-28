@@ -25,13 +25,13 @@ loader:
     mov  esp, stack + STACKSIZE         ; set up the stack
     mov  [magic], eax                   ; Multiboot magic number
     mov  [mbd], ebx                     ; Multiboot info structure
+
     push esp                            ; Setup u32 initial_stack for kmain
 
     call kmain                          ; call kernel proper
-
-    cli
-.hang:
-    hlt                                 ; halt machine should kernel return
+.hang: ; halt machine, allow interrupts to restart execution
+    sti
+    hlt
     jmp  .hang
 
 section .bss

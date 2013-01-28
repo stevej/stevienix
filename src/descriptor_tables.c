@@ -41,9 +41,9 @@ void init_descriptor_tables() {
 static void init_gdt() {
    gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
    gdt_ptr.base  = (u32)&gdt_entries;
-   screen_write("gdt_ptr: ");
-   screen_write_hex((u32)&gdt_ptr);
-   screen_write("\n");
+   //screen_write("gdt_ptr: ");
+   //screen_write_hex((u32)&gdt_ptr);
+   //screen_write("\n");
 
    gdt_set_gate(0, 0, 0, 0, 0);                // Null segment
    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Code segment
@@ -135,9 +135,9 @@ static void init_idt() {
     idt_set_gate(46, (u32)irq14, 0x08, 0x8E);
     idt_set_gate(47, (u32)irq15, 0x08, 0x8E);
 
-    screen_write("idt_ptr: ");
-    screen_write_hex((u32)&idt_ptr);
-    screen_write("\n");
+    //screen_write("idt_ptr: ");
+    //screen_write_hex((u32)&idt_ptr);
+    //screen_write("\n");
 
     idt_flush((u32)&idt_ptr);
 }

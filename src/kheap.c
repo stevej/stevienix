@@ -17,7 +17,7 @@ u32 kmalloc_int(u32 sz, int align, u32 *phys) {
     void *addr = alloc(sz, (u8)align, kheap);
     if (phys != 0) {
       page_t *page = get_page((u32)addr, 0, kernel_directory);
-      *phys = page->frame * HEAP_PAGE_SIZE + (u32)addr&0xFFF;
+      *phys = (page->frame * HEAP_PAGE_SIZE) + ((u32)addr & 0xFFF);
     }
 
     return (u32)addr;
@@ -64,7 +64,7 @@ static void expand(u32 new_size, heap_t *heap) {
   ASSERT(new_size > heap->end_address - heap->start_address);
 
   // Get the nearest following page boundary.
-  if (new_size&0xFFFFF000 != 0) {
+  if ((new_size & 0xFFFFF000) != 0) {
     new_size &= 0xFFFFF000;
     new_size += 0x1000;
   }
@@ -120,8 +120,8 @@ static i32 find_smallest_hole(u32 size, u8 page_align, heap_t *heap) {
       // Page-align the starting point of this header.
       u32 location = (u32)header;
       i32 offset = 0;
-      if ((location+sizeof(header_t)) & 0xFFFFF000 != 0)
-        offset = HEAP_PAGE_SIZE - (location+sizeof(header_t)) % HEAP_PAGE_SIZE;
+      if (((location+sizeof(header_t)) & 0xFFFFF000) != 0)
+        offset = (HEAP_PAGE_SIZE - (location+sizeof(header_t))) % HEAP_PAGE_SIZE;
       i32 hole_size = (i32)header->size - offset;
       // Can we fit now?
       if (hole_size >= (i32)size) {
@@ -159,7 +159,7 @@ heap_t *create_heap(u32 start, u32 end_addr, u32 max, u8 supervisor, u8 readonly
   start += sizeof(type_t)*HEAP_INDEX_SIZE;
 
   // Make sure the start address is page-aligned.
-  if (start & 0xFFFFF000 != 0) {
+  if ((start & 0xFFFFF000) != 0) {
     start &= 0xFFFFF000;
     start += HEAP_PAGE_SIZE;
   }
