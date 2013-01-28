@@ -205,6 +205,7 @@ int fork() {
   // This will be the entry point for the new process.
   u32 eip = read_eip();
 
+  u32 rv = 0;
   // We could be the parent or the child here - check.
   if (current_task == parent_task) {
     //screen_write("We are the parent, so set up the esp/ebp/eip for our child.\n");
@@ -213,13 +214,12 @@ int fork() {
     new_task->esp = esp;
     new_task->ebp = ebp;
     new_task->eip = eip;
-    asm volatile("sti");
 
-    return new_task->id;
-  } else {
-    // We are the child.
-    return 0;
+    rv = new_task->id;
   }
+
+  asm volatile("sti");
+  return rv;
 }
 
 // TODO(stevej): this does not quite work yet
