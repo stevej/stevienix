@@ -30,15 +30,18 @@ void kmain(u32 initial_stack) {
 
   extern task_t *current_task;
   if (current_task) {
+    /*
     screen_write("current_task id:");
     screen_write_hex(current_task->id);
-    screen_write("\n");
+    screen_write("\n");*/
   } else {
-    screen_write("no current_task defined yet");
+    //screen_write("no current_task defined yet");
   }
+  /*
   screen_write("getpid(): ");
   screen_write_hex(getpid());
   screen_write("\n");
+  */
 
   //screen_write("Let's page!\n");
 

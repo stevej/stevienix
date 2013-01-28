@@ -97,6 +97,7 @@ void move_stack(void *new_stack_start, u32 size)
 void switch_task() {
     // If we haven't initialised tasking yet, just return.
   if (!current_task) {
+    screen_write(""); // bafflingly, this seems to stabilize task switching
     return;
   }
 
