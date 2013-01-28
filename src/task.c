@@ -97,7 +97,6 @@ void move_stack(void *new_stack_start, u32 size)
 void switch_task() {
     // If we haven't initialised tasking yet, just return.
   if (!current_task) {
-    screen_write("tasking not yet setup\n");
     return;
   }
 
@@ -170,7 +169,7 @@ void switch_task() {
 }
 
 int fork() {
-  // We are modifying kernel structures, and so cannot
+  // We are modifying kernel structures, and so MUST NOT be interrupted.
   asm volatile("cli");
 
   // Take a pointer to this process' task struct for later reference.
@@ -191,7 +190,7 @@ int fork() {
   // Add it to the end of the ready queue.
   task_t *tmp_task = (task_t*)ready_queue;
   while (tmp_task->next) {
-    screen_write("traversing ready_queue\n");
+    //screen_write("traversing ready_queue\n");
     tmp_task = tmp_task->next;
   }
   /*
