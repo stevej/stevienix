@@ -15,7 +15,7 @@ void kmain(u32 initial_stack) {
   initial_esp = initial_stack;
 
   initialize_screen();
-  //screen_write("kuatos 0.1\n");
+  //screen_write("rockville 0.1\n");
   //screen_write("initial_stack: ");
   //screen_write_hex(initial_stack);
   //screen_write("\n"); // TODO(stevej): fudge, we really need vsprintf
