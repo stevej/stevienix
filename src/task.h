@@ -9,6 +9,8 @@
 #include "types.h"
 #include "paging.h"
 
+#define KERNEL_STACK_SIZE 2048       // Use a 2kb kernel stack.
+
 // This structure defines a 'task' - a process.
 typedef struct task
 {
@@ -16,6 +18,7 @@ typedef struct task
     u32 esp, ebp;       // Stack and base pointers.
     u32 eip;            // Instruction pointer.
     page_directory_t *page_directory; // Page directory.
+    u32 kernel_stack;   // Kernel stack location.
     struct task *next;     // The next task in a linked list.
 } task_t;
 

@@ -1,42 +1,47 @@
-global loader                           ; making entry point visible to linker
-global magic                            ; we will use this in kmain
-global mbd                              ; we will use this in kmain
+;
+; boot.s -- Kernel start location. Also defines multiboot header.
+;           Based on Bran's kernel development tutorial file start.asm
+;
 
-extern kmain                            ; kmain is defined in kmain.cpp
+MBOOT_PAGE_ALIGN    equ 1<<0    ; Load kernel and modules on a page boundary
+MBOOT_MEM_INFO      equ 1<<1    ; Provide your kernel with memory info
+MBOOT_HEADER_MAGIC  equ 0x1BADB002 ; Multiboot Magic value
+; NOTE: We do not use MBOOT_AOUT_KLUDGE. It means that GRUB does not
+; pass us a symbol table.
+MBOOT_HEADER_FLAGS  equ MBOOT_PAGE_ALIGN | MBOOT_MEM_INFO
+MBOOT_CHECKSUM      equ -(MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
 
-; setting up the Multiboot header - see GRUB docs for details
-MODULEALIGN equ  1<<0                   ; align loaded modules on page boundaries
-MEMINFO     equ  1<<1                   ; provide memory map
-FLAGS       equ  MODULEALIGN | MEMINFO  ; this is the Multiboot 'flag' field
-MAGIC       equ  0x1BADB002             ; 'magic number' lets bootloader find the header
-CHECKSUM    equ -(MAGIC + FLAGS)        ; checksum required
 
-section .text
+[BITS 32]                       ; All instructions should be 32-bit.
 
-align 4
-    dd MAGIC
-    dd FLAGS
-    dd CHECKSUM
+[GLOBAL mboot]                  ; Make 'mboot' accessible from C.
+[EXTERN code]                   ; Start of the '.text' section.
+[EXTERN bss]                    ; Start of the .bss section.
+[EXTERN end]                    ; End of the last loadable section.
 
-; reserve initial kernel stack space
-STACKSIZE equ 0x4000                    ; that's 16k.
+mboot:
+    dd  MBOOT_HEADER_MAGIC      ; GRUB will search for this value on each
+                                ; 4-byte boundary in your kernel file
+    dd  MBOOT_HEADER_FLAGS      ; How GRUB should load your file / settings
+    dd  MBOOT_CHECKSUM          ; To ensure that the above values are correct
+    
+    dd  mboot                   ; Location of this descriptor
+    dd  code                    ; Start of kernel '.text' (code) section.
+    dd  bss                     ; End of kernel '.data' section.
+    dd  end                     ; End of kernel.
+    dd  start                   ; Kernel entry point (initial EIP).
 
-loader:
-    mov  esp, stack + STACKSIZE         ; set up the stack
-    mov  [magic], eax                   ; Multiboot magic number
-    mov  [mbd], ebx                     ; Multiboot info structure
+[GLOBAL start]                  ; Kernel entry point.
+[EXTERN main]                   ; This is the entry point of our C code
 
-    push esp                            ; Setup u32 initial_stack for kmain
+start:
+    ; Load multiboot information:
+    push esp
+    push ebx
 
-    call kmain                          ; call kernel proper
-.hang: ; halt machine, allow interrupts to restart execution
-    sti
-    hlt
-    jmp  .hang
-
-section .bss
-
-align 4
-stack: resb STACKSIZE                   ; reserve 16k stack on a doubleword boundary
-magic: resd 1
-mbd:   resd 1
+    ; Execute the kernel:
+    cli                         ; Disable interrupts.
+    call main                   ; call our main() function.
+    jmp $                       ; Enter an infinite loop, to stop the processor
+                                ; executing whatever rubbish is in the memory
+                                ; after our kernel!

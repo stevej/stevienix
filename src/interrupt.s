@@ -3,7 +3,7 @@
   isr%1:
     cli
     push byte 0
-    push byte %1
+    push %1
     jmp isr_common_stub
 %endmacro
 
@@ -11,7 +11,7 @@
   global isr%1
   isr%1:
     cli
-    push byte %1
+    push %1
     jmp isr_common_stub
 %endmacro
 
@@ -58,6 +58,7 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
+ISR_NOERRCODE 128
 
 IRQ 0, 32
 IRQ 1, 33

@@ -28,9 +28,14 @@ void memcpy(u8 *dest, const u8 *src, u32 len) {
 }
 
 // Write len copies of val into dest.
-void memset(u8 *dest, u8 val, u32 len) {
+/*void memset(u8 *dest, u8 val, u32 len) {
   u8 *temp = (u8 *)dest;
   for ( ; len != 0; len--) *temp++ = val;
+  }*/
+
+void * memset(void * b, u8 val, u32 count) {
+  asm volatile ("cld; rep stosb" : "+c" (count), "+D" (b) : "a" (val) : "memory");
+  return b;
 }
 
 // Compare two strings. Should return -1 if

@@ -8,14 +8,15 @@
 #include "kheap.h"
 #include "initrd.h"
 #include "task.h"
+#include "syscall.h"
 
 u32 initial_esp;
 
-void kmain(u32 initial_stack) {
+int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
 
   initialize_screen();
-  //screen_write("rockville 0.1\n");
+  screen_write("rockville 0.1\n");
   //screen_write("initial_stack: ");
   //screen_write_hex(initial_stack);
   //screen_write("\n"); // TODO(stevej): fudge, we really need vsprintf
@@ -77,6 +78,7 @@ void kmain(u32 initial_stack) {
   fs_root = initialise_initrd(initrd);
 
 // Create a new process in a new address space which is a clone of this.
+  /*
   int ret = fork();
 
   screen_write("fork() returned ");
@@ -113,4 +115,16 @@ void kmain(u32 initial_stack) {
   }
   //sys_exit(0);
   asm volatile("sti");
+  */
+
+  initialise_syscalls();
+  screen_write("syscalls enabled\n");
+  switch_to_user_mode();
+  syscall_screen_write("*+,-./rockville 0.1 in user mode");
+  //call_init();
+  //for(;;){}
+
+  return 0;
 }
+
+void call_init() {}

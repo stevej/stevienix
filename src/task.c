@@ -1,4 +1,4 @@
-// 
+//
 // task.c - Implements the functionality needed to multitask.
 //          Written for JamesM's kernel development tutorials.
 //
@@ -37,6 +37,7 @@ void initialise_tasking()
     current_task->eip            = 0;
     current_task->page_directory = current_directory;
     current_task->next           = 0;
+    current_task->kernel_stack   = kmalloc_a(KERNEL_STACK_SIZE);
 
     // Reenable interrupts.
     asm volatile("sti");
@@ -147,6 +148,10 @@ void switch_task() {
 
     // Make sure the memory manager knows we've changed page directory.
     current_directory = current_task->page_directory;
+
+    // Change our kernel stack over.
+    set_kernel_stack(current_task->kernel_stack+KERNEL_STACK_SIZE);
+
     // Here we:
     // * Stop interrupts so we don't get interrupted.
     // * Temporarily puts the new EIP location in ECX.
@@ -186,6 +191,8 @@ int fork() {
   new_task->esp            = new_task->ebp = 0;
   new_task->eip            = 0;
   new_task->page_directory = directory;
+  //new_task->kernel_stack = kmalloc_a(KERNEL_STACK_SIZE);
+  current_task->kernel_stack = kmalloc_a(KERNEL_STACK_SIZE);
   new_task->next           = 0;
 
   // Add it to the end of the ready queue.
@@ -217,8 +224,8 @@ int fork() {
 
     rv = new_task->id;
   }
-
   asm volatile("sti");
+
   return rv;
 }
 
@@ -248,4 +255,61 @@ void sys_exit(u32 errno) {
 
 int getpid() {
   return current_task->id;
+}
+
+
+void switch_to_user_mode()
+{
+    // Set up our kernel stack.
+    set_kernel_stack(current_task->kernel_stack+KERNEL_STACK_SIZE);
+
+    // Set up a stack structure for switching to user mode.
+
+    asm volatile("  \
+      cli; \
+      mov $0x23, %ax; \
+      mov %ax, %ds; \
+      mov %ax, %es; \
+      mov %ax, %fs; \
+      mov %ax, %gs; \
+                    \
+                    \
+      mov %esp, %eax; \
+      pushl $0x23; \
+      pushl %esp; \
+      pushf; \
+      popl %eax; \
+      orl $0x200, (%esp); \
+      pushl %eax; \
+      pushl $0x1B; \
+      push $1f; \
+      iret; \
+    1: \
+    ");
+
+    /*
+    asm volatile("          \
+                cli;            \
+                mov $0x23, %eax;\
+                mov %eax, %ds;  \
+                mov %eax, %es;  \
+                mov %eax, %fs;  \
+                mov %eax, %gs;  \
+                                \
+                pushl $0x23;    \
+                                \
+                mov 0x1fffffff, %eax; \
+                pushl %eax;     \
+                                \
+                pushf;          \
+                orl $0x200,(%esp); \
+                                \
+                pushl $0x1B;    \
+                                \
+                push $1f;       \
+                                \
+                iret;   \
+                1:      \
+                ");
+    */
 }

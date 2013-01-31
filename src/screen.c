@@ -99,7 +99,7 @@ void screen_clear() {
    u16 blank = 0x20 /* space */ | (attributeByte << 8);
 
    int i;
-   for (i = 0; i < 80*25; i++) {
+   for (i = 0; i < (80*25); i++) {
      video_memory[i] = blank;
    }
 
