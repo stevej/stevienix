@@ -13,5 +13,6 @@ typedef          short i16;
 typedef unsigned char  u8;
 typedef          char  i8;
 
+typedef unsigned int size_t;
 
 #endif

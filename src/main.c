@@ -9,6 +9,8 @@
 #include "initrd.h"
 #include "task.h"
 #include "syscall.h"
+#include "startup.h"
+#include "printf.h"
 
 u32 initial_esp;
 
@@ -16,115 +18,41 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
 
   initialize_screen();
-  screen_write("rockville 0.1\n");
-  //screen_write("initial_stack: ");
-  //screen_write_hex(initial_stack);
-  //screen_write("\n"); // TODO(stevej): fudge, we really need vsprintf
+  screen_write("stevienix 0.1\n");
+  //  scan_pci_bus();
+
+  screen_write("total memory: ");
+  screen_write_dec(mboot_ptr->mem_lower + mboot_ptr->mem_upper);
+  screen_write("K\n");
 
   init_descriptor_tables();
   asm volatile("sti");
+  initialise_syscalls();
   init_timer(50);
 
   initialise_paging();
-  //screen_write("start tasking\n");
+  screen_write("start tasking\n");
   initialise_tasking();
+  //printk("testing printk 1\n");
+  printk("\n\n\n");
 
-  extern task_t *current_task;
-  if (current_task) {
-    /*
-    screen_write("current_task id:");
-    screen_write_hex(current_task->id);
-    screen_write("\n");*/
-  } else {
-    //screen_write("no current_task defined yet");
-  }
-  /*
-  screen_write("getpid(): ");
-  screen_write_hex(getpid());
-  screen_write("\n");
-  */
+  //char newbuf[1024] = {-1};
 
-  //screen_write("Let's page!\n");
-
-  //u32 *ptr = (u32*)0xA0000000;
-  //u32 do_page_fault = *ptr;
+  //sprintk(newbuf, 1024, "testing printk %c 2\n", 'a');
+  //screen_write(newbuf);
+  printk("testing printk %c 2\n", 'a');
+  printk("testing printk %s 2\n", "hello");
+  //  printk("testing printk %d 3\n", 1024);
+  //printk("testing printk %d 4 (no args)\n");
+  printk("\n\n\n");
   extern char initrd[];
-
-  /*
-  u32 a = kmalloc(8);
-  u32 b = kmalloc(8);
-  u32 c = kmalloc(8);
-  screen_write("a: ");
-  screen_write_hex(a);
-  screen_write(", b: ");
-  screen_write_hex(b);
-  screen_write("\nc: ");
-  screen_write_hex(c);
-
-  kfree(c);
-  kfree(b);
-  u32 d = kmalloc(12);
-  screen_write(", d: ");
-  screen_write_hex(d);
-  screen_write("\n");
-
-
-  screen_write("initrd location:");
-  screen_write_hex(initrd);
-  screen_write("\n");
-  */
 
   // Initialise the initial ramdisk, and set it as the filesystem root.
   fs_root = initialise_initrd(initrd);
 
-// Create a new process in a new address space which is a clone of this.
-  /*
-  int ret = fork();
-
-  screen_write("fork() returned ");
-  screen_write_hex(ret);
-  screen_write(", and getpid() returned ");
-  screen_write_hex(getpid());
-  screen_write("\n============================================================================\n");
-
-  // The next section of code is not reentrant so make sure we aren't interrupted during.
-  asm volatile("cli");
-
-
-  // list the contents of /
-  int i = 0;
-  struct dirent *node = 0;
-  while ( (node = readdir_fs(fs_root, i)) != 0) {
-    screen_write("Found file ");
-    screen_write(node->name);
-    fs_node_t *fsnode = finddir_fs(fs_root, node->name);
-
-    if ((fsnode->flags & 0x7) == FS_DIRECTORY) {
-      screen_write("\n\t(directory)\n");
-    } else {
-      screen_write("\n\t contents: \"");
-      char buf[256];
-      u32 sz = read_fs(fsnode, 0, 256, buf);
-      int j;
-      for (j = 0; j < sz; j++) {
-        screen_put(buf[j]);
-      }
-      screen_write("\"\n");
-    }
-    i++;
-  }
-  //sys_exit(0);
-  asm volatile("sti");
-  */
-
-  initialise_syscalls();
-  screen_write("syscalls enabled\n");
   switch_to_user_mode();
-  syscall_screen_write("*+,-./rockville 0.1 in user mode");
-  //call_init();
-  //for(;;){}
+  syscall_screen_write("*+,-./stevienix 0.1 in user mode\n");
+  syscall_test_noop();
 
   return 0;
 }
-
-void call_init() {}

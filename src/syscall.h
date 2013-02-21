@@ -63,8 +63,11 @@ int syscall_##fn(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) \
   return a; \
 }
 
+extern void test_noop(void);
+
 DECL_SYSCALL1(screen_write, const char*)
 DECL_SYSCALL1(screen_write_hex, u32)
 DECL_SYSCALL1(screen_write_dec, u32)
+DECL_SYSCALL0(test_noop)
 
 #endif

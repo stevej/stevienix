@@ -77,7 +77,7 @@ static void write_tss(i32 num, u16 ss0, u32 esp0)
 {
     // Firstly, let's compute the base and limit of our entry into the GDT.
     u32 base = (u32) &tss_entry;
-    u32 limit = base + sizeof(tss_entry);
+    u32 limit = sizeof(tss_entry); // base + ...
 
     // Now, add our TSS descriptor's address to the GDT.
     gdt_set_gate(num, base, limit, 0xE9, 0x00);

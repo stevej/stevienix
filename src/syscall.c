@@ -9,19 +9,31 @@ static void syscall_handler(registers_t *regs);
 DEFN_SYSCALL1(screen_write, 0, const char*);
 DEFN_SYSCALL1(screen_write_hex, 1, u32);
 DEFN_SYSCALL1(screen_write_dec, 2, u32);
+DEFN_SYSCALL0(test_noop, 3);
 
-static void *syscalls[3] =
+// This must be the number of elements in `syscalls`
+#define SYSCALL_NO 4
+
+static void *syscalls[SYSCALL_NO] =
 {
     &screen_write,
     &screen_write_hex,
     &screen_write_dec,
+    &test_noop
 };
 
-u32 num_syscalls = 3;
+u32 num_syscalls = SYSCALL_NO;
+
+void do_nothing(registers_t *regs) {}
 
 void initialise_syscalls() {
     // Register our syscall handler.
     register_interrupt_handler (0x80, &syscall_handler);
+    register_interrupt_handler(0x22, &do_nothing);
+}
+
+void test_noop() {
+  asm volatile("int $0x22");
 }
 
 void syscall_handler(registers_t *regs) {
