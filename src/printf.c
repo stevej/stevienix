@@ -2,18 +2,19 @@
 #include "screen.h"
 
 /**
- * Outputs fmt with directives filled in from args into out.
+ * kernel-safe sprintk, does no dynamic allocation.
+ *
+ * Outputs `fmt` with directives filled in from `args` into `out`,
+ * stopping at `out_length`.
  *
  * Format directives supported:
  *  - %s char *
- *  - %d int
- *  - %x int as hex
- *  - %p pointer (prefixed with ->)
+ *  - %d int (not supported)
+ *  - %x int as hex (not supported)
+ *  - %p pointer (prefixed with ->) (not supported)
  *  - %% literal %
  */
 void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
-  screen_write(fmt);
-  screen_write("\n");
   int out_idx = 0;
   char *s; // space for a va_arg that's a char *
 
@@ -30,6 +31,7 @@ void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
 
     switch (to_check) {
     case 's':
+      // TODO: check that va_args is really char*
       s = (char *)va_arg(args, char *);
       while (*s) {
         out[out_idx++] = *s++;

@@ -11,6 +11,7 @@
 #include "syscall.h"
 #include "startup.h"
 #include "printf.h"
+#include "cpuid.h"
 
 u32 initial_esp;
 
@@ -34,7 +35,6 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   screen_write("start tasking\n");
   initialise_tasking();
   //printk("testing printk 1\n");
-  printk("\n\n\n");
 
   //char newbuf[1024] = {-1};
 
@@ -42,9 +42,10 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   //screen_write(newbuf);
   printk("testing printk %c 2\n", 'a');
   printk("testing printk %s 2\n", "hello");
-  //  printk("testing printk %d 3\n", 1024);
-  //printk("testing printk %d 4 (no args)\n");
-  printk("\n\n\n");
+
+  printk("\n");
+  cpuid();
+
   extern char initrd[];
 
   // Initialise the initial ramdisk, and set it as the filesystem root.
