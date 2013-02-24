@@ -40,8 +40,15 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
 
   //sprintk(newbuf, 1024, "testing printk %c 2\n", 'a');
   //screen_write(newbuf);
-  printk("testing printk %c 2\n", 'a');
-  printk("testing printk %s 2\n", "hello");
+  printk("testing %%c: %c\n", 'a');
+  printk("testing %%s: %s\n", "hello");
+  printk("testing %%d 0: %d\n", 0);
+  printk("testing %%d 1: %d\n", 1);
+  printk("testing %%d 911: %d\n", 911);
+  printk("testing %%x 0: %x\n", 0);
+  printk("testing %%x 1: %x\n", 1);
+  printk("testing %%x 911: %x\n", 911);
+
 
   printk("\n");
   cpuid();
