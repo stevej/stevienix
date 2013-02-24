@@ -10,7 +10,7 @@
 #include "task.h"
 #include "syscall.h"
 #include "startup.h"
-#include "printf.h"
+#include "printk.h"
 #include "cpuid.h"
 
 u32 initial_esp;
