@@ -13,10 +13,13 @@ ASFLAGS=-felf
 all: $(SOURCES) link
 
 clean:
-	-rm *.o kernel.bin
+	-rm *.o kernel.bin TAGS
 
 link:
 	$(LD) $(LDFLAGS) -o kernel.bin $(SOURCES)
 
 .s.o:
 	nasm $(ASFLAGS) $<
+
+tags:
+	etags *.c *.h
