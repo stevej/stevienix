@@ -1,23 +1,20 @@
 #include "pci.h"
+#include "printk.h"
+#include "io.h"
 
-u32 read_AH();
+u32 detect_bus() {
+  return ind(0xCFC) != 0;
+}
 
 void scan_pci_bus() {
-  asm volatile (" \
+  /*  asm volatile ("                           \
     cli; \
-    mov $0xB181, %%eax; \
-    int  $0x1A; \
-    sti; " : ); // empty constraints section is to workaround gcc bug
+    mov $0xB181, %eax; \
+    int  $0x1A");
+  */
 
   //register int i asm("ebx");
-  screen_write("PCI 2.0: ");
-  screen_write_dec(read_AH());
-  screen_write("\n");
+  printk("PCI bus found: %d\n", detect_bus());
+  //asm volatile("sti;");
 }
 
-u32 read_AH() {
-  struct { u8 al; u8 ah; } status;
-
-  asm("movb $0x12, %%ah; movb $0x34, %%al" : "=a"(status) : );
-  return status.ah;
-}

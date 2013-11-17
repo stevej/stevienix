@@ -17,14 +17,12 @@ u32 initial_esp;
 
 int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
-
   initialize_screen();
-  screen_write("stevienix 0.1\n");
-  //  scan_pci_bus();
+  scan_pci_bus();
 
-  screen_write("total memory: ");
-  screen_write_dec(mboot_ptr->mem_lower + mboot_ptr->mem_upper);
-  screen_write("K\n");
+  screen_write("stevienix 0.1\n");
+
+  printk("total memory: %dK\n", (mboot_ptr->mem_lower + mboot_ptr->mem_upper));
 
   init_descriptor_tables();
   asm volatile("sti");
