@@ -38,7 +38,7 @@ int do_intel(void);
 int do_amd(void);
 void printregs(int eax, int ebx, int ecx, int edx);
 
-#define cpuid(in, a, b, c, d) __asm__("movl %%eax, 3; \ cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (in));
+#define cpuid(in, a, b, c, d) __asm__("movl %%eax, 1; \ cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (in));
 
 /* Simply call this function detect_cpu(); */
 void detect_cpu(void) { /* or main() if your trying to port this as an independant application */
