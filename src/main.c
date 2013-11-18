@@ -61,7 +61,7 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   fs_root = initialise_initrd(initrd);
 
   switch_to_user_mode();
-  syscall_screen_write("stevienix 0.1 is currently in user mode\n");
+  syscall_screen_write("we are now in user mode\n");
   syscall_test_noop();
 
   return 0;
