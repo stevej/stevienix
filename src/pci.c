@@ -39,7 +39,7 @@ PCI_VENTABLE lookup_vendor(u16 vendorID) {
 }
 
 PCI_DEVTABLE lookup_device(u16 vendorID, u16 deviceID) {
-  for(int i = 0; i<PCI_DEVTABLE_LEN; i++ ) {
+  for(int i = 0; i < PCI_DEVTABLE_LEN; i++ ) {
     if (PciDevTable[i].VenId == vendorID &&
         PciDevTable[i].DevId == deviceID) {
       return PciDevTable[i];
@@ -49,25 +49,36 @@ PCI_DEVTABLE lookup_device(u16 vendorID, u16 deviceID) {
   return (PCI_DEVTABLE){vendorID, deviceID, "Unknown", "Unknown"};
 }
 
+u8 detect_multi_function(u16 device_code) {
+  if (((device_code >> 16) & 0xFF) != 0xFF) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 void print_pci(u16 bus, u16 device, u16 func) {
-  u16 vendor_code = pci_config_read(bus, device, 0, 0);
+  u16 vendor_code = pci_config_read(bus, device, func, 0);
   if (vendor_code != 0xFFFF) {
     printk("%d:%d:%d ", bus, device, func);
     u16 device_code = pci_config_read(bus, device, func, 2);
-    if (((device_code>>16) & 0xFF) != 0xFF) {
-      printk(" [MF] ");
-    }
+
+    u8 multi_function = detect_multi_function(device);
+
+    if (multi_function) { printk(" [MF] "); }
+
     print_pci_entry(lookup_vendor(vendor_code), lookup_device(vendor_code, device_code));
   }
 }
 
 
-// FIXME: we are seeing the same device multiple times.
 void scan_pci_bus() {
   printk("PCI bus found! enumerating bus for devices\n");
   for (u16 bus = 0; bus < 256; bus++) {
     for (u16 device = 0; device < 32; device++) {
-      print_pci(bus, device, 0);
+      for (u8 func = 0; func < 8; func++) {
+        print_pci(bus, device, func);
+      }
     }
   }
 }
