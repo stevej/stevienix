@@ -1,4 +1,4 @@
 #! /bin/sh
 
-cat stage1 stage2 pad src/kernel.bin > floppy.img
+. build_floppy.sh
 qemu-system-i386 -cpu pentium -fda floppy.img -m 48 -monitor stdio -d int,in_asm,cpu_reset -D qemu.log
