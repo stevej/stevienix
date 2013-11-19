@@ -2,10 +2,10 @@ section .text
 
 global inb
 global inw
-global ind
+global inl
 global outb
 global outw
-global outd
+global outl
 
 inb:
   mov dx, [esp+4]
@@ -19,7 +19,7 @@ inw:
   in ax, dx
   ret
 
-ind:
+inl:
   mov dx, [esp+4]
   in eax, dx
   ret
@@ -36,7 +36,7 @@ outw:
   out dx, ax
   ret
 
-outd:
+outl:
   mov dx, [esp+4]
   mov eax, [esp+8]
   out dx, eax
