@@ -122,6 +122,11 @@ void scan_pci_bus() {
           pci_read_header(bus, device, func, header);
           printk("[%x:%x:%x] ", bus, device, func);
           print_pci_header_nice(header);
+          // print out the network card.
+          if(header->vendor_id == 0x8086 &&
+             header->device_id == 0x100E) {
+            print_pci_header_full(header);
+          }
         }
       }
     }
