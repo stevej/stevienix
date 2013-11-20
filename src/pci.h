@@ -18,10 +18,10 @@ struct pci_header {
   u8  latency_timer;
   u8  header_type;
   u8  bist;
-  u32 bar[5];
+  u32 bar[6];
   u32 cardbus_cis_ptr;
-  u16 subsystem_id;
   u16 subsystem_vendor_id;
+  u16 subsystem_id;
   u32 rom_base_address;
   u8  capabilities;
   u8  reserved0[3];
@@ -31,6 +31,7 @@ struct pci_header {
   u8  min_grant;
   u8  max_latency;
 } pci_header;
+
 
 void scan_pci_bus();
 
