@@ -58,7 +58,7 @@ void print_pci_header_nice(struct pci_header *header) {
 void print_pci_header_full(struct pci_header *header) {
   printk("DEVICE: vendor_id:%x device_id:%x command:%x status:%x revision_id:%x prog_if:%x subclass:%x \
 class_code:%x cache_line_size:%x latency_timer:%x header_type:%x bist:%x \
-bar[0]:%x bar[1]:%x bar[2]:%x bar[3]:%x bar[4]:%x cardbus_cis_ptr:%x \
+bar[0]:%x bar[1]:%x bar[2]:%x bar[3]:%x bar[4]:%x bar[6]:%x cardbus_cis_ptr:%x \
 subsystem_id:%x subsystem_vendor_id:%x rom_base_address:%x capabilities:%x \
 interrupt_line:%x interrupt_pin:%x min_grant:%x max_latency:%x\n",
          header->vendor_id,
@@ -78,6 +78,7 @@ interrupt_line:%x interrupt_pin:%x min_grant:%x max_latency:%x\n",
          header->bar[2],
          header->bar[3],
          header->bar[4],
+         header->bar[5],
          header->cardbus_cis_ptr,
          header->subsystem_id,
          header->subsystem_vendor_id,
