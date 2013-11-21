@@ -1,5 +1,6 @@
 #include "printk.h"
 #include "screen.h"
+#include "serial.h"
 
 /**
  * kernel-safe sprintk, does no dynamic allocation.
@@ -85,7 +86,9 @@ void printk(const char *fmt, ...) {
   size_t size = 1024;
   char newbuf[1024] = {-1};
   sprintk(newbuf, size, fmt, args);
+  // TODO(stevej): allow main to (de)register multiple outputs.
   screen_write(newbuf);
+  serial_write(newbuf);
 
   va_end(args);
 }

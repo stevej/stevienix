@@ -12,6 +12,7 @@
 #include "startup.h"
 #include "printk.h"
 #include "cpudet.h"
+#include "serial.h"
 
 u32 initial_esp;
 
@@ -19,9 +20,11 @@ void detect_memory(struct multiboot *mboot_ptr) {
   printk("total memory: %dK\n", (mboot_ptr->mem_lower + mboot_ptr->mem_upper));
 }
 
+
 int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
   initialize_screen(mboot_ptr);
+  serial_init(); // FIXME: don't assume COM1
   printk("stevienix 0.2\n");
 
   detect_cpu();
@@ -35,7 +38,7 @@ int main(struct multiboot *mboot_ptr, u32 initial_stack) {
   init_timer(50);
 
   initialise_paging();
-  screen_write("start tasking\n");
+  printk("begin tasking\n");
   initialise_tasking();
 
   extern char initrd[];
