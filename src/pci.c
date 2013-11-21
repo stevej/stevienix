@@ -52,6 +52,7 @@ PCI_DEVTABLE lookup_device(u16 vendorID, u16 deviceID) {
 }
 
 void print_pci_header_nice(struct pci_header *header) {
+  printk("%x %x, %x", header->class_code, header->subclass, header->prog_if);
   print_pci_entry(lookup_vendor(header->vendor_id), lookup_device(header->vendor_id, header->device_id));
 }
 
@@ -124,11 +125,17 @@ void scan_pci_bus() {
           struct pci_header *header = kmalloc(sizeof(pci_header));
           pci_read_header(bus, device, func, header);
           printk("[%x:%x:%x] ", bus, device, func);
-          print_pci_header_nice(header);
-          // print out the network card.
-          if(header->vendor_id == 0x8086 &&
-             header->device_id == 0x100E) {
-            print_pci_header_full(header);
+
+          if (header->class_code == 0x2 &&
+              header->subclass == 0x0) {
+            printk("ETH: ");
+            print_pci_header_nice(header);
+          } else if (header->class_code == 0x3 &&
+                     header->subclass == 0x0) {
+            printk("VIDEO: ");
+            print_pci_header_nice(header);
+          } else {
+            print_pci_header_nice(header);
           }
         }
       }
