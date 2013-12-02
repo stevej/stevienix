@@ -1,4 +1,6 @@
 *.o
-kernel.bin
-floppy.img
+kernel.elf
 qemu.log
+scratch
+stevienix.iso
+TAGS
