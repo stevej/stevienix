@@ -1,6 +1,6 @@
 default 0
-timeout 0
+timeout 10
 
-title 	stevienix
-root 	(cd)
-kernel	/kernel.elf
+title stevienix
+root  (cd)
+kernel /kernel.elf
