@@ -7,7 +7,9 @@ My hobby Unix clone. Name credit to [@9len](https://twitter.com/9len)
 You will need the following on a mac:
 
 * GCC cross-compiler for building elf binaries
-* mkisofs (homebrew: cdrtools)
+** homebrew: i586-elf-gcc, i586-elf-binutils, i586-elf-gdb
+* mkisofs
+** homebrew: cdrtools
 
 # How to boot this
 
