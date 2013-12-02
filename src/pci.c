@@ -125,17 +125,16 @@ void scan_pci_bus() {
           struct pci_header *header = kmalloc(sizeof(pci_header));
           pci_read_header(bus, device, func, header);
           printk("[%x:%x:%x] ", bus, device, func);
+          print_pci_header_nice(header);
 
           if (header->class_code == 0x2 &&
               header->subclass == 0x0) {
             printk("ETH: ");
-            print_pci_header_nice(header);
+            print_pci_header_full(header);
           } else if (header->class_code == 0x3 &&
                      header->subclass == 0x0) {
             printk("VIDEO: ");
             print_pci_header_full(header);
-          } else {
-            print_pci_header_nice(header);
           }
         }
       }
