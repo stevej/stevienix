@@ -133,7 +133,7 @@ void scan_pci_bus() {
           } else if (header->class_code == 0x3 &&
                      header->subclass == 0x0) {
             printk("VIDEO: ");
-            print_pci_header_nice(header);
+            print_pci_header_full(header);
           } else {
             print_pci_header_nice(header);
           }
