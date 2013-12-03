@@ -31,7 +31,7 @@ void initialise_tasking()
     move_stack((void*)0xE0000000, 0x2000);
 
     // Initialise the first task (kernel task)
-    current_task   = ready_queue = (task_t*)kmalloc(sizeof(task_t));
+    current_task   = ready_queue = (task_t*)kmalloc(sizeof(*ready_queue));
     current_task->id             = next_pid++;
     current_task->esp            = current_task->ebp = 0;
     current_task->eip            = 0;
@@ -41,6 +41,20 @@ void initialise_tasking()
 
     // Reenable interrupts.
     asm volatile("sti");
+}
+
+int queue_count(task_t *queue) {
+  int size = 1;
+  while (queue->next) {
+    size++;
+    queue = queue->next;
+  }
+
+  return size;
+}
+
+void queue_watcher() {
+  printk("[queue_watcher] %d\n", queue_count(ready_queue));
 }
 
 void move_stack(void *new_stack_start, u32 size)
@@ -123,11 +137,7 @@ void switch_task() {
 
     // Have we just switched tasks?
     if (eip == 0x12345) {
-      /*
-      screen_write("task.c: switched tasks to ");
-      screen_write_hex(current_task->id);
-      screen_write("\n");
-      */
+      printk("task.c: switched tasks to %x\n", current_task->id);
       return;
     }
 

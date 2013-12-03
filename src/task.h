@@ -8,6 +8,7 @@
 
 #include "types.h"
 #include "paging.h"
+#include "kheap.h"
 
 #define KERNEL_STACK_SIZE 2048       // Use a 2kb kernel stack.
 
@@ -38,5 +39,9 @@ void move_stack(void *new_stack_start, u32 size);
 
 // Returns the pid of the current process.
 int getpid();
+
+
+// Designed to be run as a task in the kernel to keep an eye on the queue size.
+void queue_watcher();
 
 #endif
