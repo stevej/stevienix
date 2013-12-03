@@ -7,9 +7,10 @@ KERNEL=boot.o cpudet.o main.o io.o descriptor_tables.o isr.o interrupt.o gdt_flu
 CC=i586-elf-gcc
 LD=i586-elf-ld
 NM=i586-elf-nm
-CFLAGS=-nostdlib -nostdinc -Wall -Wextra -std=gnu99 -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wconversion -ffreestanding
+CFLAGS=-nostdlib -Wall -Wextra -std=gnu99 -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wconversion -ffreestanding
 LDFLAGS=-Tlink.ld
 ASFLAGS=-felf
+NASM=nasm
 
 KERNEL_TARGET=kernel.elf
 KERNEL_MAP=kernel.map
@@ -23,10 +24,10 @@ link:
 	$(LD) $(LDFLAGS) -o $(KERNEL_TARGET) $(KERNEL)
 
 .s.o:
-	nasm $(ASFLAGS) $<
+	$(NASM) $(ASFLAGS) $<
 
 tags:
 	etags *.c *.h
 
 map:
-	NM $(KERNEL_TARGET) | grep -f kernel.symbols > $(KERNEL_MAP)
+	$(NM) -t x $(KERNEL_TARGET) | grep -f kernel.symbols > $(KERNEL_MAP)
