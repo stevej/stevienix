@@ -17,7 +17,7 @@
 #define MULTIBOOT_FLAG_APM     0x200
 #define MULTIBOOT_FLAG_VBE     0x400
 
-struct multiboot {
+typedef struct multiboot {
   u32 flags;
   u32 mem_lower;
   u32 mem_upper;
@@ -42,7 +42,7 @@ struct multiboot {
   u32 vbe_interface_seg;
   u32 vbe_interface_off;
   u32 vbe_interface_len;
-} __attribute__ ((packed));
+} __attribute__ ((packed)) multiboot;
 
 typedef struct {
   u16 attributes;
@@ -69,9 +69,8 @@ typedef struct {
   u16 reserved2;
 } __attribute__ ((packed)) vbe_info_t;
 
-struct multiboot *copy_multiboot(struct multiboot *mboot_ptr);
-void dump_multiboot(struct multiboot *mboot_ptr);
+multiboot *copy_multiboot(multiboot *mboot_ptr);
+void dump_multiboot(multiboot *mboot_ptr);
 char * ramdisk;
-struct multiboot * mboot_ptr;
 
 #endif

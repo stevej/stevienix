@@ -16,12 +16,12 @@
 
 u32 initial_esp;
 
-void detect_memory(struct multiboot *mboot_ptr) {
+void detect_memory(multiboot *mboot_ptr) {
   printk("total memory: %dK\n", (mboot_ptr->mem_lower + mboot_ptr->mem_upper));
 }
 
 
-int main(struct multiboot *mboot_ptr, u32 initial_stack) {
+int main(multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
   initialize_screen(mboot_ptr);
   serial_init(); // FIXME: don't assume COM1
