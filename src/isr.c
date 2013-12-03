@@ -31,7 +31,7 @@ void isr_handler(registers_t regs) {
   }
 }
 
-void irq_resent(u32 ir1) {
+void irq_resend(u32 ir1) {
   // TODO: implement
 }
 
