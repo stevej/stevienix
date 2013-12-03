@@ -29,3 +29,13 @@ void serial_write(char * buf) {
     serial_write_char(buf[i++]);
   }
 }
+
+int serial_received() {
+  return inb(PORT + 5) & 1;
+}
+
+char read_serial() {
+  while (serial_received() == 0);
+
+  return inb(PORT);
+}
