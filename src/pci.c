@@ -21,7 +21,7 @@ u16 pci_config_read (u32 bus, u32 device, u32 func, u32 offset) {
   return (u16)((inl(0xCFC) >> ((offset & 2) * 8)) & 0xffff);
 }
 
-u8 pci_exists(u32 bus, u32 slot, u32 func) {
+bool pci_exists(u32 bus, u32 slot, u32 func) {
   u16 vendor_code = pci_config_read(bus, slot, func, 0);
   return (vendor_code != 0xFFFF);
 }
