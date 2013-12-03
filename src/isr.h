@@ -38,4 +38,8 @@ typedef struct registers {
 typedef void (*isr_t)(registers_t*);
 void register_interrupt_handler(u8 n, isr_t handler);
 
+
+void irq_resend(u32 irq);
+void irq_ack(u32 irq);
+
 #endif

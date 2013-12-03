@@ -31,6 +31,18 @@ void isr_handler(registers_t regs) {
   }
 }
 
+void irq_resent(u32 ir1) {
+  // TODO: implement
+}
+
+void irq_ack(u32 irq) {
+  if (irq >= 12) {
+    outb(0xA0, 0x20);
+  } else {
+    outb(0x20, 0x20);
+  }
+}
+
 // This gets called from interrupt.s
 void irq_handler(registers_t regs) {
   // Send an EOI (end of interrupt) signal to the PICs.

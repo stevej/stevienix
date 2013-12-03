@@ -137,7 +137,7 @@ void switch_task() {
 
     // Have we just switched tasks?
     if (eip == 0x12345) {
-      printk("task.c: switched tasks to %x\n", current_task->id);
+      //printk("task.c: switched tasks to %x\n", current_task->id);
       return;
     }
 

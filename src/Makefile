@@ -2,7 +2,7 @@
 # The C and C++ rules are already setup by default.
 # The only one that needs changing is the assembler
 # rule, as we use nasm instead of GNU as.
-KERNEL=boot.o cpudet.o main.o io.o descriptor_tables.o isr.o interrupt.o gdt_flush.o screen.o timer.o paging.o panic.o kheap.o ordered_array.o initrd.o fs.o initrd_loader.o process.o task.o serial.o syscall.o pci.o port.o printk.o video.o
+KERNEL=boot.o cpudet.o main.o io.o descriptor_tables.o isr.o interrupt.o gdt_flush.o screen.o timer.o paging.o panic.o kheap.o keyboard.o ordered_array.o initrd.o fs.o initrd_loader.o process.o task.o serial.o syscall.o pci.o port.o printk.o video.o
 
 CC=i586-elf-gcc
 LD=i586-elf-ld

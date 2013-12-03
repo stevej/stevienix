@@ -13,6 +13,7 @@
 #include "printk.h"
 #include "cpudet.h"
 #include "serial.h"
+#include "keyboard.h"
 
 u32 initial_esp;
 
@@ -31,6 +32,8 @@ int main(multiboot *mboot_ptr, u32 initial_stack) {
 
   detect_memory(mboot_ptr);
   scan_pci_bus();
+  keyboard_install();
+
 
   init_descriptor_tables();
   asm volatile("sti");
