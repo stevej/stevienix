@@ -40,6 +40,7 @@ void move_stack(void *new_stack_start, u32 size);
 // Returns the pid of the current process.
 int getpid();
 
+void switch_to_user_mode();
 
 // Designed to be run as a task in the kernel to keep an eye on the queue size.
 void queue_watcher();

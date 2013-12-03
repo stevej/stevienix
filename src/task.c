@@ -268,8 +268,7 @@ int getpid() {
 }
 
 
-void switch_to_user_mode()
-{
+void switch_to_user_mode() {
     // Set up our kernel stack.
     set_kernel_stack(current_task->kernel_stack+KERNEL_STACK_SIZE);
 
