@@ -13,6 +13,7 @@
  *  - %d int (not supported)
  *  - %x int as hex (not supported)
  *  - %p pointer (prefixed with ->) (not supported)
+ *  - %b bool (1 is true, all else false)
  *  - %% literal %
  */
 
@@ -39,6 +40,21 @@ void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
       s = (char *)va_arg(args, char *);
       while (*s) {
         out[out_idx++] = *s++;
+      }
+      continue;
+    case 'b': // bool
+      n = (int)va_arg(args, int);
+      if (n) {
+        out[out_idx++] = 't';
+        out[out_idx++] = 'r';
+        out[out_idx++] = 'u';
+        out[out_idx++] = 'e';
+      } else {
+        out[out_idx++] = 'f';
+        out[out_idx++] = 'a';
+        out[out_idx++] = 'l';
+        out[out_idx++] = 's';
+        out[out_idx++] = 'e';
       }
       continue;
     case 'd': // int
