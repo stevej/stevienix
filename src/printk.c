@@ -79,10 +79,22 @@ void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
       }
       continue;
     case 'p': // pointer as int
-      // TODO: not tested.
+      n = (u32)va_arg(args, u32);
       out[out_idx++] = '-';
       out[out_idx++] = '>';
-      out[out_idx++] = '@'; // we haven't done this yet.
+
+      if (n) {
+        u32_to_dec(n, t);
+
+        x = 0;
+        for (char c = t[x]; c != 0; c = t[++x]) {
+          out[out_idx++] = c;
+        }
+      } else {
+        out[out_idx++] = 'N';
+        out[out_idx++] = 'U';
+        out[out_idx++] = 'L';
+      }
       continue;
     case '%': // escaped %
       out[out_idx++] = '%';
