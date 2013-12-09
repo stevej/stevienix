@@ -37,6 +37,7 @@ just plain borrowed, attributed appropriately):
 * [Nick Johnson's Rhombus OS](https://github.com/nickbjohnson4224/rhombus)
 * [Kevin Lange's とあるOS](https://github.com/klange/toaruos/)
 * [VMware SVGA Device Developer Kit](http://vmware-svga.sourceforge.net)
+* [L4](http://os.inf.tu-dresden.de/L4/)
 
 Thanks to the hobbyist community for making lots of great tutorials
 
@@ -55,4 +56,3 @@ Books that helped me:
 * [Design of OS/2](http://www.amazon.com/Design-OS-Harvey-M-Deitel/dp/0201548895)
 * [Operating System Design: The Xinu Approach](http://www.amazon.com/Operating-System-Design-Approach-Linksys/dp/143988109X)
 * [PCI System Architecture](http://www.amazon.com/PCI-System-Architecture-4th-Edition/)
-
