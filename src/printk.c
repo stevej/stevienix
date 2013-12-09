@@ -10,9 +10,10 @@
  *
  * Format directives supported:
  *  - %s char *
- *  - %d int (not supported)
- *  - %x int as hex (not supported)
- *  - %p pointer (prefixed with ->) (not supported)
+ *  - %c unsigned char
+ *  - %d unsigned int
+ *  - %x unsigned int as hex
+ *  - %p pointer (prefixed with ->)
  *  - %b bool (1 is true, all else false)
  *  - %% literal %
  */
@@ -57,7 +58,8 @@ void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
         out[out_idx++] = 'e';
       }
       continue;
-    case 'd': // int
+    case 'c': // char can fall-through and be treated like an unsigned decimal number.
+    case 'd': // uint32_t
       n = (u32)va_arg(args, u32);
       u32_to_dec(n, t);
 
@@ -65,9 +67,6 @@ void sprintk(char *out, size_t out_length, const char *fmt, va_list args) {
       for (char c = t[x]; c != 0; c = t[++x]) {
         out[out_idx++] = c;
       }
-      continue;
-    case 'c': // char
-      out[out_idx++] = (char)va_arg(args, int);
       continue;
     case 'x': // int as hex
       n = (u32)va_arg(args, u32);
