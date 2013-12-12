@@ -12,6 +12,12 @@ u32 placement_address = (u32)&end;
 extern page_directory_t *kernel_directory;
 heap_t *kheap = 0;
 
+// Call if the linker script's end is not actually the
+// end. Specifically if we're using grub modules.
+void kheap_set_placement_address(u32 end) {
+  placement_address = end;
+}
+
 u32 kmalloc_int(u32 sz, int align, u32 *phys) {
   if (kheap != 0) {
     void *addr = alloc(sz, (u8)align, kheap);

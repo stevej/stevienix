@@ -95,4 +95,9 @@ u32 kmalloc(u32 sz);
  */
 void kfree(void *p);
 
+/**
+ * Setting our placement to a new address
+ */
+void kheap_set_placement_address(u32 end);
+
 #endif // KHEAP_H
