@@ -50,7 +50,7 @@ Thanks to the hobbyist community for making lots of great tutorials
 Books that helped me:
 
 * [Lion's Book](http://www.amazon.com/Lions-Commentary-Unix-John/dp/1573980137)
-* [BeFS](http://www.amazon.com/Practical-System-Design-Dominic-Giampaolo-ebook)
+* [BeFS](http://www.amazon.com/Practical-System-Design-Dominic-Giampaolo/dp/1558604979)
 * [Linkers and Loaders](http://www.amazon.com/Linkers-Kaufmann-Software-Engineering-Programming)
 * [The Indispensable PC Hardware Book](http://www.amazon.com/The-Indispensable-Hardware-Book-Edition)
 * [Design of OS/2](http://www.amazon.com/Design-OS-Harvey-M-Deitel/dp/0201548895)
