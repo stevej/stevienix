@@ -1,26 +1,28 @@
 // Borrowed from James Malloy's tutorial
-#include "multiboot.h"
-#include "screen.h"
-#include "descriptor_tables.h"
-#include "timer.h"
-#include "fs.h"
-#include "paging.h"
-#include "kheap.h"
-#include "initrd.h"
-#include "task.h"
-#include "syscall.h"
-#include "startup.h"
-#include "printk.h"
 #include "cpudet.h"
-#include "serial.h"
+#include "descriptor_tables.h"
+#include "fs.h"
+#include "initrd.h"
 #include "keyboard.h"
+#include "kheap.h"
+#include "multiboot.h"
+#include "paging.h"
+#include "pci.h"
+#include "printk.h"
+#include "screen.h"
+#include "serial.h"
+#include "startup.h"
+#include "syscall.h"
+#include "task.h"
+#include "timer.h"
+
+// void ls(fs_node_t *fs_root);
 
 u32 initial_esp;
 
 void detect_memory(multiboot *mboot_ptr) {
   printk("total memory: %dK\n", (mboot_ptr->mem_lower + mboot_ptr->mem_upper));
 }
-
 
 int main(multiboot *mboot_ptr, u32 initial_stack) {
   initial_esp = initial_stack;
@@ -34,9 +36,8 @@ int main(multiboot *mboot_ptr, u32 initial_stack) {
   scan_pci_bus();
   keyboard_install();
 
-
   init_descriptor_tables();
-  asm volatile("sti");
+  __asm__ volatile("sti");
   initialise_syscalls();
   init_timer(50);
 
@@ -44,12 +45,11 @@ int main(multiboot *mboot_ptr, u32 initial_stack) {
   printk("begin tasking\n");
   initialise_tasking();
 
-  extern char initrd[];
-
+  extern u32 *initrd[];
   // Initialise the initial ramdisk, and set it as the filesystem root.
-  fs_root = initialise_initrd(initrd);
+  fs_root = initialise_initrd(*initrd);
   printk("running ls on the initrd\n");
-  ls(fs_root);
+  // ls(fs_root);
 
   switch_to_user_mode();
   syscall_screen_write("we are now in user mode\n");
@@ -60,20 +60,26 @@ int main(multiboot *mboot_ptr, u32 initial_stack) {
 
 // List the files in the directory
 // TODO: move this into userspace once our libc is up.
-void ls(fs_node_t *fs_root) {
+/*
+void ls(fs_node_t *fs_root)
+{
   int i = 0;
-  fs_node_t * node;
+  fs_node_t *node;
 
-  while((node = readdir_fs(fs_root, i)) != 0) {
+  while ((node = readdir_fs(fs_root, i)) != 0)
+  {
     fs_node_t *fsnode = finddir_fs(fs_root, node->name);
 
-    if ((fsnode->flags & 0x7) == FS_DIRECTORY) {
+    if ((fsnode->flags & 0x7) == FS_DIRECTORY)
+    {
       printk("_\t[%s]\n", node->name);
-    } else {
+    }
+    else
+    {
       char buffer[256];
       uint32_t size = read_fs(fsnode, 0, 256, buffer);
       printk("%d\t%s\n", size, node->name);
     }
     i++;
   }
-}
+}*/

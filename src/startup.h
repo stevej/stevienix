@@ -1,6 +1,6 @@
-#ifndef STARTUP_H
-#define STARTUP_H
+#ifndef _STARTUP_H
+#define _STARTUP_H
 
 #include "types.h"
 
-#endif
+#endif // _STARTUP_H

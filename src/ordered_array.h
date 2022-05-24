@@ -1,10 +1,13 @@
 /**
  * Generic ordered array.
  */
-#ifndef ORDERED_ARRAY_H
-#define ORDERED_ARRAY_H
+#ifndef _ORDERED_ARRAY_H
+#define _ORDERED_ARRAY_H
 
+#include "io.h"
 #include "types.h"
+
+extern u32 kmalloc(u32 sz);
 
 /**
  * This array is insertion sorted - it always remains in a sorted
@@ -12,13 +15,13 @@
  * be cast to a void* -- so a u32int, or any pointer.
  */
 
-typedef void* type_t;
+typedef void *type_t;
 
 /**
  * A predicate should return nonzero if the first argument
  * is less than the second. Else it should return zero.
  */
-typedef i8 (*lessthan_predicate_t)(type_t,type_t);
+typedef i8 (*lessthan_predicate_t)(type_t, type_t);
 
 typedef struct {
   type_t *array;
@@ -35,8 +38,10 @@ i8 standard_lessthan_predicate(type_t a, type_t b);
 /**
  * Create an ordered array.
  */
-ordered_array_t create_ordered_array(u32 max_size, lessthan_predicate_t less_than);
-ordered_array_t place_ordered_array(void *addr, u32 max_size, lessthan_predicate_t less_than);
+ordered_array_t create_ordered_array(u32 max_size,
+                                     lessthan_predicate_t less_than);
+ordered_array_t place_ordered_array(void *addr, u32 max_size,
+                                    lessthan_predicate_t less_than);
 
 /**
  * Destroy an ordered array.
@@ -58,4 +63,4 @@ type_t lookup_ordered_array(u32 i, ordered_array_t *array);
  */
 void remove_ordered_array(u32 i, ordered_array_t *array);
 
-#endif // ORDERED_ARRAY_H
+#endif // _ORDERED_ARRAY_H

@@ -1,5 +1,5 @@
-#ifndef PANIC_H
-#define PANIC_H
+#ifndef _PANIC_H
+#define _PANIC_H
 
 #include "types.h"
 
@@ -9,4 +9,4 @@
 extern void panic(const char *message, const char *file, u32 line);
 extern void panic_assert(const char *file, u32 line, const char *desc);
 
-#endif
+#endif // _PANIC_H

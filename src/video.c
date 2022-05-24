@@ -1,25 +1,28 @@
 #include "video.h"
 #include "printk.h"
 
-#define VBE_DISPI_IOPORT_INDEX          0x01CE
-#define VBE_DISPI_IOPORT_DATA           0x01CF
-#define VBE_DISPI_INDEX_ID              0x0
-#define VBE_DISPI_INDEX_XRES            0x1
-#define VBE_DISPI_INDEX_YRES            0x2
-#define VBE_DISPI_INDEX_BPP             0x3
-#define VBE_DISPI_INDEX_ENABLE          0x4
-#define VBE_DISPI_INDEX_BANK            0x5
-#define VBE_DISPI_INDEX_VIRT_WIDTH      0x6
-#define VBE_DISPI_INDEX_VIRT_HEIGHT     0x7
-#define VBE_DISPI_INDEX_X_OFFSET        0x8
-#define VBE_DISPI_INDEX_Y_OFFSET        0x9
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
-#define VBE_DISPI_DISABLED              0x00
-#define VBE_DISPI_ENABLED               0x01
-#define VBE_DISPI_GETCAPS               0x02
-#define VBE_DISPI_8BIT_DAC              0x20
-#define VBE_DISPI_LFB_ENABLED           0x40
-#define VBE_DISPI_NOCLEARMEM            0x80
+#define VBE_DISPI_IOPORT_INDEX 0x01CE
+#define VBE_DISPI_IOPORT_DATA 0x01CF
+#define VBE_DISPI_INDEX_ID 0x0
+#define VBE_DISPI_INDEX_XRES 0x1
+#define VBE_DISPI_INDEX_YRES 0x2
+#define VBE_DISPI_INDEX_BPP 0x3
+#define VBE_DISPI_INDEX_ENABLE 0x4
+#define VBE_DISPI_INDEX_BANK 0x5
+#define VBE_DISPI_INDEX_VIRT_WIDTH 0x6
+#define VBE_DISPI_INDEX_VIRT_HEIGHT 0x7
+#define VBE_DISPI_INDEX_X_OFFSET 0x8
+#define VBE_DISPI_INDEX_Y_OFFSET 0x9
+
+#define VBE_DISPI_DISABLED 0x00
+#define VBE_DISPI_ENABLED 0x01
+#define VBE_DISPI_GETCAPS 0x02
+#define VBE_DISPI_8BIT_DAC 0x20
+#define VBE_DISPI_LFB_ENABLED 0x40
+#define VBE_DISPI_NOCLEARMEM 0x80
 
 void vbe_write(u16 index, u16 value) {
   outw(VBE_DISPI_IOPORT_INDEX, index);
@@ -44,14 +47,14 @@ void video_set_resolution(u16 xres, u16 yres, u8 depth) {
 }
 
 /* only valid for 800x600x32bpp */
-static void putpixel(unsigned char* screen, int x, int y, int color) {
-    unsigned where = x*4 + y*3200;
-    screen[where] = color & 255;              // BLUE
-    screen[where + 1] = (color >> 8) & 255;   // GREEN
-    screen[where + 2] = (color >> 16) & 255;  // RED
+static void putpixel(unsigned char *screen, u8 x, u8 y, int color) {
+  u8 where = x * 4 + y * 3200;
+  screen[where] = color & 255;             // BLUE
+  screen[where + 1] = (color >> 8) & 255;  // GREEN
+  screen[where + 2] = (color >> 16) & 255; // RED
 }
 
 void draw_test_pattern() {
-  //printk("LFB enabled: %x\n", vbe_read(VBE_DISPI_LFB_ENABLED));
-  //putpixel((unsigned char *)0xB8000, 400, 300, 0x000004);
+  // printk("LFB enabled: %x\n", vbe_read(VBE_DISPI_LFB_ENABLED));
+  // putpixel((unsigned char *)0xB8000, 400, 300, 0x000004);
 }

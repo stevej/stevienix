@@ -1,12 +1,13 @@
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef _SERIAL_H
+#define _SERIAL_H
 
+#include "io.h"
 #include "types.h"
 
 // TODO(stevej): allow ports other than COM1
 void serial_init();
-void serial_write(char * buf);
+void serial_write(char *buf);
 
-char read_serial();
+u8 read_serial();
 
-#endif
+#endif // _SERIAL_H

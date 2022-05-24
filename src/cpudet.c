@@ -27,24 +27,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* You need to include a file with fairly(ish) compliant printf prototype, Decimal and String support like %s and %d and this is truely all you need! */
+/* You need to include a file with fairly(ish) compliant printf prototype,
+ * Decimal and String support like %s and %d and this is truely all you need! */
 //#include <stdio.h> /* for printf(); */
 
 #include "cpudet.h"
+#include "printk.h"
 #include "types.h"
 
 /* Required Declarations */
 int do_intel(void);
 int do_amd(void);
 void printregs(int eax, int ebx, int ecx, int edx);
+void printflags(int ecx, int edx);
 
-#define cpuid(in, a, b, c, d) __asm__("movl %%eax, 1; \ cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (in));
+#define cpuid(in, a, b, c, d)                                                  \
+  __asm__("movl %%eax, 1; cpuid"                                               \
+          : "=a"(a), "=b"(b), "=c"(c), "=d"(d)                                 \
+          : "a"(in));
 
 /* Simply call this function detect_cpu(); */
-void detect_cpu(void) { /* or main() if your trying to port this as an independant application */
+void detect_cpu(void) { /* or main() if your trying to port this as an
+                           independant application */
   u32 ebx, unused;
   cpuid(0, unused, ebx, unused, unused);
-  switch(ebx) {
+  switch (ebx) {
   case 0x756e6547: /* Intel Magic Code */
     do_intel();
     break;
@@ -55,70 +62,66 @@ void detect_cpu(void) { /* or main() if your trying to port this as an independa
     printk("Unknown x86 CPU Detected\n");
     break;
   }
-
-  return 0;
 }
 
 /* Intel Specific brand list */
-char *Intel[] = {
-  "Brand ID Not Supported.",
-  "Intel(R) Celeron(R) processor",
-  "Intel(R) Pentium(R) III processor",
-  "Intel(R) Pentium(R) III Xeon(R) processor",
-  "Intel(R) Pentium(R) III processor",
-  "Reserved",
-  "Mobile Intel(R) Pentium(R) III processor-M",
-  "Mobile Intel(R) Celeron(R) processor",
-  "Intel(R) Pentium(R) 4 processor",
-  "Intel(R) Pentium(R) 4 processor",
-  "Intel(R) Celeron(R) processor",
-  "Intel(R) Xeon(R) Processor",
-  "Intel(R) Xeon(R) processor MP",
-  "Reserved",
-  "Mobile Intel(R) Pentium(R) 4 processor-M",
-  "Mobile Intel(R) Pentium(R) Celeron(R) processor",
-  "Reserved",
-  "Mobile Genuine Intel(R) processor",
-  "Intel(R) Celeron(R) M processor",
-  "Mobile Intel(R) Celeron(R) processor",
-  "Intel(R) Celeron(R) processor",
-  "Mobile Geniune Intel(R) processor",
-  "Intel(R) Pentium(R) M processor",
-  "Mobile Intel(R) Celeron(R) processor"
-};
+char *Intel[] = {"Brand ID Not Supported.",
+                 "Intel(R) Celeron(R) processor",
+                 "Intel(R) Pentium(R) III processor",
+                 "Intel(R) Pentium(R) III Xeon(R) processor",
+                 "Intel(R) Pentium(R) III processor",
+                 "Reserved",
+                 "Mobile Intel(R) Pentium(R) III processor-M",
+                 "Mobile Intel(R) Celeron(R) processor",
+                 "Intel(R) Pentium(R) 4 processor",
+                 "Intel(R) Pentium(R) 4 processor",
+                 "Intel(R) Celeron(R) processor",
+                 "Intel(R) Xeon(R) Processor",
+                 "Intel(R) Xeon(R) processor MP",
+                 "Reserved",
+                 "Mobile Intel(R) Pentium(R) 4 processor-M",
+                 "Mobile Intel(R) Pentium(R) Celeron(R) processor",
+                 "Reserved",
+                 "Mobile Genuine Intel(R) processor",
+                 "Intel(R) Celeron(R) M processor",
+                 "Mobile Intel(R) Celeron(R) processor",
+                 "Intel(R) Celeron(R) processor",
+                 "Mobile Geniune Intel(R) processor",
+                 "Intel(R) Pentium(R) M processor",
+                 "Mobile Intel(R) Celeron(R) processor"};
 
-/* This table is for those brand strings that have two values depending on the processor signature. It should have the same number of entries as the above table. */
-char *Intel_Other[] = {
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Intel(R) Celeron(R) processor",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Intel(R) Xeon(R) processor MP",
-  "Reserved",
-  "Reserved",
-  "Intel(R) Xeon(R) processor",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved",
-  "Reserved"
-};
+/* This table is for those brand strings that have two values depending on the
+ * processor signature. It should have the same number of entries as the above
+ * table. */
+char *Intel_Other[] = {"Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Intel(R) Celeron(R) processor",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Intel(R) Xeon(R) processor MP",
+                       "Reserved",
+                       "Reserved",
+                       "Intel(R) Xeon(R) processor",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved",
+                       "Reserved"};
 
 /* Intel-specific information */
 int do_intel(void) {
   printk("Intel Specific Features:\n");
-  u32 eax, ebx, ecx, edx, max_eax, signature, unused = 0;
+  int eax, ebx, ecx, edx, max_eax, signature = 0;
   int model, family, type, brand, stepping, reserved;
   int extended_family = -1;
   cpuid(1, eax, ebx, ecx, edx);
@@ -131,7 +134,7 @@ int do_intel(void) {
   signature = eax;
   printk("edx: %d\n", edx);
   printk("Type %d - ", type);
-  switch(type) {
+  switch (type) {
   case 0:
     printk("Original OEM");
     break;
@@ -147,7 +150,7 @@ int do_intel(void) {
   }
   printk("\n");
   printk("Family %d - ", family);
-  switch(family) {
+  switch (family) {
   case 3:
     printk("i386");
     break;
@@ -164,16 +167,16 @@ int do_intel(void) {
     printk("Pentium 4");
   }
   printk("\n");
-  if(family == 15) {
+  if (family == 15) {
     extended_family = (eax >> 20) & 0xff;
     printk("Extended family %d\n", extended_family);
   }
   printk("Model %d - ", model);
-  switch(family) {
+  switch (family) {
   case 3:
     break;
   case 4:
-    switch(model) {
+    switch (model) {
     case 0:
     case 1:
       printk("DX");
@@ -199,7 +202,7 @@ int do_intel(void) {
     }
     break;
   case 5:
-    switch(model) {
+    switch (model) {
     case 1:
       printk("60/66");
       break;
@@ -215,7 +218,7 @@ int do_intel(void) {
     }
     break;
   case 6:
-    switch(model) {
+    switch (model) {
     case 1:
       printk("Pentium Pro");
       break;
@@ -244,33 +247,36 @@ int do_intel(void) {
   printregs(eax, ebx, ecx, edx);
   printflags(ecx, edx);
 
-  /* Quok said: If the max extended eax value is high enough to support the processor brand string
-     (values 0x80000002 to 0x80000004), then we'll use that information to return the brand information.
-     Otherwise, we'll refer back to the brand tables above for backwards compatibility with older processors.
-     According to the Sept. 2006 Intel Arch Software Developer's Guide, if extended eax values are supported,
-     then all 3 values for the processor brand string are supported, but we'll test just to make sure and be safe. */
-  if(max_eax >= 0x80000004) {
+  /* Quok said: If the max extended eax value is high enough to support the
+     processor brand string (values 0x80000002 to 0x80000004), then we'll use
+     that information to return the brand information. Otherwise, we'll refer
+     back to the brand tables above for backwards compatibility with older
+     processors. According to the Sept. 2006 Intel Arch Software Developer's
+     Guide, if extended eax values are supported, then all 3 values for the
+     processor brand string are supported, but we'll test just to make sure and
+     be safe. */
+  if (max_eax >= (int)0x80000004) {
     printk("Brand: ");
-    if(max_eax >= 0x80000002) {
+    if (max_eax >= (int)0x80000002) {
       cpuid(0x80000002, eax, ebx, ecx, edx);
       printregs(eax, ebx, ecx, edx);
     }
-    if(max_eax >= 0x80000003) {
+    if (max_eax >= (int)0x80000003) {
       cpuid(0x80000003, eax, ebx, ecx, edx);
       printregs(eax, ebx, ecx, edx);
     }
-    if(max_eax >= 0x80000004) {
+    if (max_eax >= (int)0x80000004) {
       cpuid(0x80000004, eax, ebx, ecx, edx);
       printregs(eax, ebx, ecx, edx);
     }
     printk("\n");
-  } else if(brand > 0) {
+  } else if (brand > 0) {
     printk("Brand %d - ", brand);
-    if(brand < 0x18) {
-      if(signature == 0x000006B1 || signature == 0x00000F13) {
-	printk("%s\n", Intel_Other[brand]);
+    if (brand < 0x18) {
+      if (signature == (int)0x000006B1 || signature == (int)0x00000F13) {
+        printk("%s\n", Intel_Other[brand]);
       } else {
-	printk("%s\n", Intel[brand]);
+        printk("%s\n", Intel[brand]);
       }
     } else {
       printk("Reserved\n");
@@ -285,11 +291,11 @@ void printregs(int eax, int ebx, int ecx, int edx) {
   int j;
   char string[17];
   string[16] = '\0';
-  for(j = 0; j < 4; j++) {
-    string[j] = eax >> (8 * j);
-    string[j + 4] = ebx >> (8 * j);
-    string[j + 8] = ecx >> (8 * j);
-    string[j + 12] = edx >> (8 * j);
+  for (j = 0; j < 4; j++) {
+    string[j] = (char)eax >> (8 * j);
+    string[j + 4] = (char)ebx >> (8 * j);
+    string[j + 8] = (char)ecx >> (8 * j);
+    string[j + 12] = (char)edx >> (8 * j);
   }
   printk("%s", string);
 }
@@ -297,7 +303,7 @@ void printregs(int eax, int ebx, int ecx, int edx) {
 /* AMD-specific information */
 int do_amd(void) {
   printk("AMD Specific Features:\n");
-  unsigned long extended, eax, ebx, ecx, edx, unused;
+  int extended, eax, ebx, ecx, edx, unused;
   int family, model, stepping, reserved;
   cpuid(1, eax, unused, unused, unused);
   model = (eax >> 4) & 0xf;
@@ -305,12 +311,12 @@ int do_amd(void) {
   stepping = eax & 0xf;
   reserved = eax >> 12;
   printk("Family: %d Model: %d [", family, model);
-  switch(family) {
+  switch (family) {
   case 4:
     printk("486 Model %d", model);
     break;
   case 5:
-    switch(model) {
+    switch (model) {
     case 0:
     case 1:
     case 2:
@@ -331,7 +337,7 @@ int do_amd(void) {
     }
     break;
   case 6:
-    switch(model) {
+    switch (model) {
     case 1:
     case 2:
     case 4:
@@ -354,21 +360,21 @@ int do_amd(void) {
   }
   printk("]\n");
   cpuid(0x80000000, extended, unused, unused, unused);
-  if(extended == 0) {
+  if (extended == 0) {
     return 0;
   }
-  if(extended >= 0x80000002) {
+  if (extended >= (int)0x80000002) {
     unsigned int j;
     printk("Detected Processor Name: ");
-    for(j = 0x80000002; j <= 0x80000004; j++) {
+    for (j = 0x80000002; j <= 0x80000004; j++) {
       cpuid(j, eax, ebx, ecx, edx);
       printregs(eax, ebx, ecx, edx);
     }
     printk("\n");
   }
-  if(extended >= 0x80000007) {
+  if (extended >= (int)0x80000007) {
     cpuid(0x80000007, unused, unused, unused, edx);
-    if(edx & 1) {
+    if (edx & 1) {
       printk("Temperature Sensing Diode Detected!\n");
     }
   }
@@ -377,68 +383,75 @@ int do_amd(void) {
 }
 
 #define CHECKBUILDER(x, y) x##y
-#define CHECKC(FLAG) if (ecx & CHECKBUILDER(CPUID_FEAT_ECX_, FLAG)) { printk(#FLAG); printk(" "); }
-#define CHECK(FLAG) if (edx & CHECKBUILDER(CPUID_FEAT_EDX_, FLAG)) { printk(#FLAG); printk(" ");}
+#define CHECKC(FLAG)                                                           \
+  if (ecx & CHECKBUILDER(CPUID_FEAT_ECX_, FLAG)) {                             \
+    printk(#FLAG);                                                             \
+    printk(" ");                                                               \
+  }
+#define CHECK(FLAG)                                                            \
+  if (edx & CHECKBUILDER(CPUID_FEAT_EDX_, FLAG)) {                             \
+    printk(#FLAG);                                                             \
+    printk(" ");                                                               \
+  }
 
-void printflags(u32 ecx, u32 edx) {
+void printflags(int ecx, int edx) {
   printk("ecx: %d\n", ecx);
   printk("edx: %d\n", edx);
   printk("flags: ");
-    CHECKC(SSE3)
-    CHECKC(PCLMUL)
-    CHECKC(DTES64)
-    CHECKC(MONITOR)
-    CHECKC(DS_CPL)
-    CHECKC(VMX)
-    CHECKC(SMX)
-    CHECKC(EST)
-    CHECKC(TM2)
-    CHECKC(SSSE3)
-    CHECKC(CID)
-    CHECKC(FMA)
-    CHECKC(CX16)
-    CHECKC(ETPRD)
-    CHECKC(PDCM)
-    CHECKC(DCA)
-    CHECKC(SSE4_1)
-    CHECKC(SSE4_2)
-    CHECKC(x2APIC)
-    CHECKC(MOVBE)
-    CHECKC(POPCNT)
-    CHECKC(AES)
-    CHECKC(XSAVE)
-    CHECKC(OSXSAVE)
-    CHECKC(AVX)
-    CHECK(FPU)
-    CHECK(VME)
-    CHECK(DE)
-    CHECK(PSE)
-    CHECK(TSC)
-    CHECK(MSR)
-    CHECK(PAE)
-    CHECK(MCE)
-    CHECK(CX8)
-    CHECK(APIC)
-    CHECK(SEP)
-    CHECK(MTRR)
-    CHECK(PGE)
-    CHECK(MCA)
-    CHECK(CMOV)
-    CHECK(PAT)
-    CHECK(PSE36)
-    CHECK(PSN)
-    CHECK(CLF)
-    CHECK(DTES)
-    CHECK(ACPI)
-    CHECK(MMX)
-    CHECK(FXSR)
-    CHECK(SSE)
-    CHECK(SSE2)
-    CHECK(SS)
-    CHECK(HTT)
-    CHECK(TM1)
-    CHECK(IA64)
-    CHECK(PBE)
-    printk("\n");
-
+  CHECKC(SSE3)
+  CHECKC(PCLMUL)
+  CHECKC(DTES64)
+  CHECKC(MONITOR)
+  CHECKC(DS_CPL)
+  CHECKC(VMX)
+  CHECKC(SMX)
+  CHECKC(EST)
+  CHECKC(TM2)
+  CHECKC(SSSE3)
+  CHECKC(CID)
+  CHECKC(FMA)
+  CHECKC(CX16)
+  CHECKC(ETPRD)
+  CHECKC(PDCM)
+  CHECKC(DCA)
+  CHECKC(SSE4_1)
+  CHECKC(SSE4_2)
+  CHECKC(x2APIC)
+  CHECKC(MOVBE)
+  CHECKC(POPCNT)
+  CHECKC(AES)
+  CHECKC(XSAVE)
+  CHECKC(OSXSAVE)
+  CHECKC(AVX)
+  CHECK(FPU)
+  CHECK(VME)
+  CHECK(DE)
+  CHECK(PSE)
+  CHECK(TSC)
+  CHECK(MSR)
+  CHECK(PAE)
+  CHECK(MCE)
+  CHECK(CX8)
+  CHECK(APIC)
+  CHECK(SEP)
+  CHECK(MTRR)
+  CHECK(PGE)
+  CHECK(MCA)
+  CHECK(CMOV)
+  CHECK(PAT)
+  CHECK(PSE36)
+  CHECK(PSN)
+  CHECK(CLF)
+  CHECK(DTES)
+  CHECK(ACPI)
+  CHECK(MMX)
+  CHECK(FXSR)
+  CHECK(SSE)
+  CHECK(SSE2)
+  CHECK(SS)
+  CHECK(HTT)
+  CHECK(TM1)
+  CHECK(IA64)
+  // CHECK(PBE)
+  printk("\n");
 }

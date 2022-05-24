@@ -1,5 +1,7 @@
 #include "fs.h"
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 fs_node_t *fs_root = 0; // The root of the filesystem.
 
 u32 read_fs(fs_node_t *node, u32 offset, u32 size, u8 *buffer) {
@@ -20,6 +22,9 @@ u32 write_fs(fs_node_t *node, u32 offset, u32 size, u8 *buffer) {
   }
 }
 
+// FIXME: doesn't work.
+u32 write_fs_byte(fs_node_t *node, u32 offset, u8 value) { return 0; }
+
 void open_fs(fs_node_t *node, u8 read, u8 write) {
   // Has the node got an open callback?
   if (node->open != 0) {
@@ -34,22 +39,18 @@ void close_fs(fs_node_t *node) {
   }
 }
 
-struct dirent *readdir_fs(fs_node_t *node, u32 index)
-{
-    // Is the node a directory, and does it have a callback?
-    if ( (node->flags&0x7) == FS_DIRECTORY &&
-         node->readdir != 0 )
-        return node->readdir(node, index);
-    else
-        return 0;
+struct dirent *readdir_fs(fs_node_t *node, u32 index) {
+  // Is the node a directory, and does it have a callback?
+  if ((node->flags & 0x7) == FS_DIRECTORY && node->readdir != 0)
+    return node->readdir(node, index);
+  else
+    return 0;
 }
 
-fs_node_t *finddir_fs(fs_node_t *node, char *name)
-{
-    // Is the node a directory, and does it have a callback?
-    if ( (node->flags&0x7) == FS_DIRECTORY &&
-         node->finddir != 0 )
-        return node->finddir(node, name);
-    else
-        return 0;
+fs_node_t *finddir_fs(fs_node_t *node, char *name) {
+  // Is the node a directory, and does it have a callback?
+  if ((node->flags & 0x7) == FS_DIRECTORY && node->finddir != 0)
+    return node->finddir(node, name);
+  else
+    return 0;
 }
